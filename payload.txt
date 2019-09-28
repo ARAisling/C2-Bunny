@@ -18,7 +18,7 @@ LED SETUP
 ATTACKMODE RNDIS_ETHERNET HID
 
 LED STAGE1
-# Starting a http server on the switch payload
+# Starting a http server on the home directory of the Bunny
 gohttp -d=/home -p 80 &
 
 LED ATTACK
